@@ -1,0 +1,23 @@
+spring:
+    application:
+        name: blogging-app
+
+
+    datasource:
+        url: jdbc:mysql://localhost:3306/blogging_app
+        username: root
+        password: codeforinterview
+        driver-class-name: com.mysql.cj.jdbc.Driver
+
+    jpa:
+        show-sql: true
+        hibernate:
+            ddl-auto: update
+    properties:
+        hibernate:
+            dialect: org.hibernate.dialect.MySQLDialect
+            format_sql: true
+
+
+server:
+port: 8080
