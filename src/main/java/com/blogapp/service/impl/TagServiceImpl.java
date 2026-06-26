@@ -9,7 +9,9 @@ import com.blogapp.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +19,28 @@ public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
     private final TagMapper tagMapper;
+
+    // Helper Method
+    @Override
+    public Set<Tag> getTagsByIds(Set<Long> ids){
+        return new HashSet<>(tagRepository.findAllById(ids));
+    }
+
+    @Override
+    public TagResponseDto updateTag(Long id, TagRequestDto tagRequestDto) {
+
+        Tag tag = tagRepository.findById(id).orElseThrow(()->
+                new RuntimeException("Tag not found"));
+
+        tag.setName((tagRequestDto.getName()));
+        tag.setColor(tagRequestDto.getColor());
+
+        Tag updatedTag = tagRepository.save(tag);
+
+        return tagMapper.toDto(updatedTag);
+
+    }
+
 
     @Override
     public TagResponseDto createTag(TagRequestDto dto) {

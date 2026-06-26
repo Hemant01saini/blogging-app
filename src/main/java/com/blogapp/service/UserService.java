@@ -3,6 +3,7 @@ package com.blogapp.service;
 import com.blogapp.dto.request.RegisterRequestDto;
 import com.blogapp.dto.request.UpdateUserRequestDto;
 import com.blogapp.dto.response.UserResponseDto;
+import com.blogapp.entity.User;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface UserService {
     UserResponseDto getUserByUsername(String username);
 
     UserResponseDto updateUser(Long id, UpdateUserRequestDto updateUserRequestDto);
+
+    User getUserEntityById(Long id);
 }

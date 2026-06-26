@@ -18,6 +18,14 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
+    //Helper Method
+    @Override
+    public Category getCategoryEntityById(Long id){
+        return categoryRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Category not found"));
+    }
+
     @Override
     public CategoryResponseDto createCategory(CategoryRequestDto dto) {
 
@@ -58,5 +66,20 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(()->new RuntimeException("Category not found"));
 
         categoryRepository.delete(category);
+    }
+
+    @Override
+    public CategoryResponseDto updateCategory(Long id, CategoryRequestDto categoryRequestDto) {
+
+
+        Category category = categoryRepository.findById(id).orElseThrow(()->
+                new RuntimeException("Category not found"));
+
+        category.setName(categoryRequestDto.getName());
+        category.setDescription(categoryRequestDto.getDescription());
+
+        Category updatedCategory = categoryRepository.save(category);
+
+        return categoryMapper.toDto(updatedCategory);
     }
 }

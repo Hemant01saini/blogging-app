@@ -1,24 +1,22 @@
 package com.blogapp.service.impl;
 import com.blogapp.dto.request.CreatePostRequestDto;
+import com.blogapp.dto.request.UpdatePostRequestDto;
+import com.blogapp.dto.response.CategoryResponseDto;
 import com.blogapp.dto.response.PostResponseDto;
+import com.blogapp.dto.response.UserResponseDto;
 import com.blogapp.entity.Category;
 import com.blogapp.entity.Post;
 import com.blogapp.entity.Tag;
 import com.blogapp.entity.User;
-import com.blogapp.exception.ResourceNotFoundException;
 import com.blogapp.mapper.PostMapper;
-import com.blogapp.repository.CategoryRepository;
 import com.blogapp.repository.PostRepository;
-import com.blogapp.repository.TagRepository;
-import com.blogapp.repository.UserRepository;
+import com.blogapp.service.CategoryService;
 import com.blogapp.service.PostService;
+import com.blogapp.service.TagService;
+import com.blogapp.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
-
-import javax.net.ssl.HttpsURLConnection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -28,31 +26,26 @@ import java.util.Set;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
-    private final CategoryRepository categoryRepository;
-    private final TagRepository tagRepository;
+    private final UserService userService;
+    private final CategoryService categoryService;
+    private final TagService tagService;
     private final PostMapper postMapper;
+
+
 
 
     @Override
     public PostResponseDto createPost(CreatePostRequestDto postRequestDto) {
 
+        User user =
+                userService.getUserEntityById(postRequestDto.getCreatedById());
 
-        User user = userRepository.findById(
-                postRequestDto.getCreatedById())
-                .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+        Category category =
+                categoryService.getCategoryEntityById(postRequestDto.getCategoryId());
 
-//        log.info("User Fetched "+user.getId());
+        Set<Tag> tags =
+                tagService.getTagsByIds(postRequestDto.getTagIds());
 
-        Category category = categoryRepository.findById(
-                postRequestDto.getCategoryId())
-                .orElseThrow(()->
-                        new ResourceNotFoundException("Category not found"));
-
-        Set<Tag> tags = new HashSet<>(
-                tagRepository.findAllById(
-                        postRequestDto.getTagIds()));
 
         Post post = Post.builder()
                 .title(postRequestDto.getTitle())
@@ -74,5 +67,52 @@ public class PostServiceImpl implements PostService {
         List<Post> posts = postRepository.findAll();
 
         return postMapper.toDtoList(posts);
+    }
+
+    @Override
+    public PostResponseDto updatePost(Long id, UpdatePostRequestDto updatePostRequestDto) {
+
+        Post post = postRepository.findById(id).orElseThrow(()->
+                new RuntimeException("Post not found"));
+
+        Category category = categoryService.getCategoryEntityById(
+                updatePostRequestDto.getCategoryId());
+
+        Set<Tag> tags = tagService.getTagsByIds(updatePostRequestDto.getTagIds());
+
+        post.setTitle(updatePostRequestDto.getTitle());
+        post.setContent(updatePostRequestDto.getContent());
+        post.setStatus(updatePostRequestDto.getStatus());
+        post.setCategory(category);
+        post.setTags(tags);
+
+        Post updatedPost = postRepository.save(post);
+        return postMapper.toDto(updatedPost);
+    }
+
+    @Override
+    public void deletePost(Long id) {
+
+        Post post = postRepository.findById(id).orElseThrow(()->
+                new RuntimeException("Post not found"));
+
+        postRepository.delete(post);
+    }
+
+    @Override
+    public PostResponseDto getPostById(Long id) {
+
+       Post post = postRepository.findById(id)
+                .orElseThrow(()->
+                        new RuntimeException("Post not found"));
+
+        return postMapper.toDto(post);
+    }
+
+    @Override
+    public Post getPostEntityById(Long id) {
+
+        return postRepository.findById(id).orElseThrow(()->
+                new RuntimeException("Post Not Found"));
     }
 }

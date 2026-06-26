@@ -18,6 +18,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+ // Helper Method
+    @Override
+    public User getUserEntityById(Long id){
+        return userRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+    }
 
     @Override
     public UserResponseDto register(RegisterRequestDto requestDto) {
