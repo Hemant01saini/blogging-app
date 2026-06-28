@@ -19,19 +19,19 @@ public class TagController {
     @PostMapping
     public TagResponseDto createTag(
             @Valid @RequestBody
-            TagRequestDto dto){
+            TagRequestDto dto) {
         return tagService.createTag(dto);
     }
 
     @GetMapping
-    public List<TagResponseDto> getAllTags(){
+    public List<TagResponseDto> getAllTags() {
 
         return tagService.getAllTags();
     }
 
     @GetMapping("/{id}")
     public TagResponseDto getTagById(
-            @PathVariable Long id){
+            @PathVariable Long id) {
 
         return tagService.getTagByd(id);
     }
@@ -40,13 +40,13 @@ public class TagController {
     public TagResponseDto updateTag(
             @PathVariable Long id,
             @RequestBody TagRequestDto dto
-    ){
-        return tagService.updateTag(id,dto);
+    ) {
+        return tagService.updateTag(id, dto);
     }
 
     @DeleteMapping("/{id}")
     public void deleteTag(
-            @PathVariable Long id){
+            @PathVariable Long id) {
         tagService.deleteTag(id);
     }
 }
