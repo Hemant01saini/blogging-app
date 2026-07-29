@@ -1,0 +1,41 @@
+spring:
+    application:
+        name: blogging-app
+
+
+    datasource:
+        url: jdbc:mysql://localhost:3306/blogging_app
+        username: root
+        password: codeforinterview
+        driver-class-name: com.mysql.cj.jdbc.Driver
+
+    jpa:
+        show-sql: true
+        hibernate:
+            ddl-auto: update
+    properties:
+        hibernate:
+            dialect: org.hibernate.dialect.MySQLDialect
+            format_sql: true
+
+
+    servlet:
+        multipart:
+            max-file-size: 10MB
+            max-request-size: 10MB
+
+jwt:
+    secret: your-very-long-secret-key-at-least-32-characters-long
+    expiration: 2592000000
+
+media:
+    base-url: http://localhost:8080/uploads/profile/
+
+aws:
+    access-key: ${AWS_ACCESS_KEY}
+    secret-key: ${AWS_SECRET_KEY}
+    region: us-east-1
+    bucket-name: blog-app-media-hemant
+
+server:
+    port: 8080
