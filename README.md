@@ -6,6 +6,10 @@ The project allows users to create posts, like posts, comment, follow users, sav
 
 ---
 
+## ER Diagram
+
+![ER Diagram](docs/er-diagram.png)
+
 ## Features
 
 - User Registration
